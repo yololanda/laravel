@@ -8,3 +8,4 @@ reader is expected to learn
 	4)inheritance
 
 init.php here acts main.java in normal java programming.
+Learning laravel will be easier if the reader has prior knowledge of OOP concept in PHP.

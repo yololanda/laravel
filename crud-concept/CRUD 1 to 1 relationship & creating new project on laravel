@@ -1,0 +1,182 @@
+==================================================
+	INTRO CRUD
+==================================================
+Create
+Read
+Update
+Delete
+
+==================================================
+	Laravel Installation
+==================================================
+
+//this command to create installation of laravel on folder.
+//this example code. change directory to code.
+
+composer create-project --prefer-dist laravel/laravel onetoone 5.2.29
+
+
+//Go to main terminal (The one without vagrant ssh )
+//sudo nano /etc/hosts ,, add 192.168.10.10 onetoone.test 
+// 192.168.10.10 is the Ip Address for Homestead.
+//here is the work flow
+sudo nano /etc/hosts
+//add & save
+192.168.10.10 onetoone.test
+
+
+===================================================
+	Edit Homestead.yaml
+===================================================
+
+//change drive to homestead
+vim Homestead.yaml
+
+//add new mapping and save it
+
+-map: onetoone.test
+ to: /home/vagrant/code/onetoone/public
+
+//quit vim & refersh the homestead
+vagrant provision
+
+====================================================
+//Setup DB connection
+====================================================
+//open the application folder via anything, example here phpstrom
+go to .env change the database details to below :
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=onetoone
+DB_USERNAME=root
+DB_PASSWORD=secret
+
+//go to phpmyadmin, example here phpmyadmin.test:8000
+create new db name it onetoone
+
+
+=====================================================
+//Make migration
+=====================================================
+vagrant ssh
+cd to onetoone
+type : php artisan make:model Address -m
+
+
+//open php migration address in onetone migration folder
+//change this line 
+
+Schema::create('addresses', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+        });
+
+
+to 
+
+//adding string name into the table of database
+Schema::create('addresses', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+//lastly migrate it, once everything is confirmed. Type this command 
+
+php artisan migrate
+
+
+//go to user model add this line to indicate relation between user and address
+
+public function address(){
+	return $this->hasOne('App\Address');
+}
+
+//go to address migration overwrite this lines
+
+Schema::create('addresses', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->string('name');
+            $table->timestamps();
+        });
+
+
+//inside route add new route function
+======================================================================
+//for Insert
+======================================================================
+
+Route::get('/insert', function() {
+    //find User model static find(id)
+    $user = User::find(1);
+
+    //instantiate object
+    $address = new Address(['name'=>'1234 Houston av NY NY 11218']);
+
+    //this will save address
+    //$user->address() same as user.address() in java
+    //since $user = User::find(1); //find $id 1 in User Model
+    //then address() is equal to 
+    /*
+	 public function address(){
+        return $this->hasOne('App\Address');
+   	 }
+    */
+    //in User model.
+    $user->address()->save($address);
+
+
+});
+
+
+//add permission to add name into address
+    protected $fillable = [
+        'name'
+    ];
+
+
+//execute the web url 
+
+onetoone.test/insert
+
+//this will insert the name into address
+
+
+=======================================================================
+//for update
+=======================================================================
+Route::get('/update',function(){
+    //this will get the first object rather than entire record of the object with ->first()
+    $address = Address::where('user_id', 1)->first(); // or using 'where('user_id', '=', 1); or 'whereUserId(1)''
+
+    $address->name = "444312 Update Av, Nebraska";
+    
+    $address->save();
+});
+
+
+=======================================================================
+//for delete
+=======================================================================
+Route::get('/delete', function(){
+    $user = User::findOrFail(1);
+    // can delete immediately after find with $user = User::findOrFail(1)->delete(); or
+    $user->address()->delete();
+
+    return "deleted";
+
+});
+
+
+=======================================================================
+//for Read
+=======================================================================
+Route::get('/read',function(){
+    $user = User::findOrFail(1);
+    //find User model id = 1, and in table address find name related
+    echo $user->address->name;
+});
+

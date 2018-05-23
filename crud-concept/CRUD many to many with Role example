@@ -1,0 +1,10 @@
+==============================================================
+	CRUD Role many to many
+==============================================================
+
+Create model
+
+php artisan make:model Role -m
+
+//this creating pivot table or look up table for reference
+php artisan make:migration create_role_user_table --create=role_user

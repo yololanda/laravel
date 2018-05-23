@@ -1,0 +1,12 @@
+===============================================
+//one to Many PHP artisan tinker
+==============================================
+
+cd to onetomany
+
+php artisan tinker
+
+//create is like insert sql but elequent version follow C R U D.
+
+App\User::create(['name'=>'Toin', 'email'=>'toin.chang31@gmail.com', 'password'=>bcrypt("123")]);
+

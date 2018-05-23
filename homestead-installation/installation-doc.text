@@ -1,0 +1,126 @@
+//-------------------SET UP LARAVEL WITH HOMESTEAD IN LINUX 29/3/2018---------------
+
+1. download and install virtualbox into home dir
+2. download and isntall vagrant into home dir
+3. NOTE : to check vagrant and virtualbox exist or not
+	go to terminal type :
+	vagrant --version
+	vboxmanage --version
+4. Initialize vagrant and create file into linux home, Advise: creating vagrant folder first and only initiate it.
+	type :
+	vagrant box add laravel/homestead
+	vagrant init hashicorp/percise64
+	vagrant up
+5. clone the homestead by :
+	git clone https://github.com/laravel/homestead.git ~/Homestead
+   then move to homestead dir and update it to stable version
+	cd Homestead
+	git checkout v7.3.0
+
+6. Finally initialize the homestead for configuration purpose
+	bash init.sh
+	nano Homestead.yaml
+		-> chang site to : /home/vagrant/code/homestead/public
+	Type :
+		-> mkdir code;
+		// this is folder that contain laravel works.
+
+
+
+
+RUN : cd  Homestead && vagrant up.
+	  vegrant provision  //for change
+
+SSH into Vagrant : from Homestead dir vagrant ssh
+
+
+//------ laravel create file with homestead and vagrant -------
+ssh to vargant first
+cd code
+laravel new homestead <-- this will create homestead laravel configuration inside code
+
+//--- create project
+vagrant ssh
+cd code
+laravel new demo  // demo is the project name
+
+
+//to see the localhost listening
+php artisan serve
+
+//tosee all list of route
+change into project dir in the homestead via vagrant ssh
+type : php artisan route:list
+
+//NOTE: ensure project is mapped into /etc/host and Homestead.yaml
+inside host make new ip address like 192.168.10.10 cmst.test
+
+and inside /etc/hosts
+add : - map: cms.test
+        to /home/vagrant/code/cms/public
+
+
+
+//------- old method -----
+got to yaml create new file path.
+composer create-project laravel/laravel demo
+//------- old method -----
+
+//------ To check laravel working or not ---------
+go into vargant ssh then cd to code/homestead/
+//homestead is example, if you name the porject cms, then change to cms drive and type the command below
+type : php artisan serve
+
+OPTIONAL : if ssh key missing error. Generate SSH KEY
+	ssh-keygen -t rsa -b 4096 -C "email@email.com"
+		--- this will generate keyname and require password
+		OR
+	ssh-keygen -t rsa
+		--- this will generate keyname and require password
+	eval "$(ssh-agent -s)"
+	ssh-add -k ~/.shh/keyname
+	change the path by : nano homestead.yml and remove rsa_id into keyname
+
+
+
+
+
+//------ Composer ------------
+Dependency Manager -> allow download php pre-made code from internet. 
+Written by someone else.
+find it at packagist.org
+to INSTALL COMPOSSER, ssh into vargant with "vargant ssh"
+
+got to  "getcomposser.org/download/"
+to install it, run the command 1 by 1.
+to see it is working or not, type "php composer.phar"
+
+//------ SET UP GLOBAL COMPOSSER WITH BATH PROFILE-------
+//to use composser everywhere
+nano .bash_profile //create bash_profile bath
+inside nano type "export PATH="~/.composer/vendor/bin:$PATH"
+and here you can put any alias for shortcut
+--- this is for auto refresh alias so no need source
+alias refbash="source ~/.bash_profile"
+
+
+//------- update homestead laravel vesion ------
+cd to homestead
+vagrant box update
+
+
+//------- Creating laravel file with composser ----
+composer create-project --prefer-dist laravel/laravel filename
+
+//-------- NOTE for Missing route --------
+ in newer version of laravel, the route file is located inside routes folder which contains :
+api.php
+console.php
+web.php
+and for web route you can put it inside web.php
+full documentation can be seen here :
+https://laravel.com/docs/5.3/routing#basic-routing
+
+
+
+

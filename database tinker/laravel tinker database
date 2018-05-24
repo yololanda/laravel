@@ -1,0 +1,62 @@
+==============================================
+	Laravel Database Tinker
+==============================================
+
+go ssh into vagrant
+cd to cms or any app folder
+type:
+php artisan tinker
+
+Illuminate\Database\Eloquent\MassAssignmentException with message 'Add [title] to fillable property to allow mass assignment on [App\Post].'
+
+
+must put protected $fillable = ['title'];
+
+
+//this allow fill data in tinker through object
+$post = new App\Post;
+
+$post->title = 'Thjis is new title';
+$post->content = 'I am conding and doing awesome';
+$post->save();
+
+if this return true then it is save.
+
+//to find specific id belong to the post
+$post::find(1); // 1 here = id, it will fecth id 1 details
+
+or combine with elequent 
+
+$post::whereId(1)->first();
+
+
+
+==============================================
+	Update data
+==============================================
+$post = App\Post::find(3) // select id 3
+$post->title = "Update it";
+$post->content = "Update Content";
+$post->save();
+
+==============================================
+	Delete Data
+==============================================
+
+$post->delete() //soft delete
+$post = App\Post::onlyTrashed(); //this is select only thrashed
+$post->forceDelete(); //to remove it permanently, will return 1 as true
+
+
+
+==============================================
+	Relationship in Tinker
+==============================================
+//find user has many posts
+
+$user = App\User::find(1); //this namespace=>App\User
+$user->roles // this will display relationship between user and roles which is administrator
+
+
+
+
